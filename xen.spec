@@ -83,6 +83,21 @@ Patch670: xsa14-xen-3.4-and-4.x.patch
 Patch671: xsa16-xen-4.1.patch
 Patch672: xsa17-qemu-xen-traditional-all.patch
 Patch673: xsa10-4.1.patch
+# XSA 18 do not affect Xen 4.1
+# XSA 19 not applicable to Qubes
+Patch675: xsa20.patch
+Patch676: xsa21.patch
+Patch677: xsa22-4.1.patch
+Patch678: xsa23-4.0-4.1.patch
+Patch679: xsa24.patch
+Patch680: xsa25-4.1.patch
+Patch681: xsa26-4.1.patch
+Patch682: xsa27-4.1.patch
+Patch683: xsa28-4.1.patch
+Patch684: xsa29-4.1.patch
+Patch685: xsa30-4.1.patch
+Patch686: xsa31-4.1.patch
+# XSA 32 do not affect Xen 4.1
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: transfig libidn-devel zlib-devel texi2html SDL-devel curl-devel
@@ -244,6 +259,18 @@ to build the xen packages.
 %patch671 -p1
 %patch672 -d tools/ioemu-qemu-xen -p1
 %patch673 -p1
+%patch675 -p1
+%patch676 -p1
+%patch677 -p1
+%patch678 -p1
+%patch679 -p1
+%patch680 -p1
+%patch681 -p1
+%patch682 -p1
+%patch683 -p1
+%patch684 -p1
+%patch685 -p1
+%patch686 -p1
 
 # stubdom sources
 cp -v %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE16} stubdom
