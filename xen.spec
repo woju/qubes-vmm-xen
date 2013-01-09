@@ -98,6 +98,7 @@ Patch684: xsa29-4.1.patch
 Patch685: xsa30-4.1.patch
 Patch686: xsa31-4.1.patch
 # XSA 32 do not affect Xen 4.1
+Patch688: xsa33-4.1.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: transfig libidn-devel zlib-devel texi2html SDL-devel curl-devel
@@ -271,6 +272,7 @@ to build the xen packages.
 %patch684 -p1
 %patch685 -p1
 %patch686 -p1
+%patch688 -p1
 
 # stubdom sources
 cp -v %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE16} stubdom
