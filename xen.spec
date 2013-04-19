@@ -50,6 +50,7 @@ Patch20: localgcc451fix.patch
 Patch23: grub-ext4-support.patch
 Patch26: localgcc46fix.patch
 Patch28: pygrubfix.patch
+Patch32: xsa50-4.1.2-prereq.patch
 
 Patch100: xen-configure-xend.patch
 Patch101: xen-no-downloads.patch
@@ -99,6 +100,13 @@ Patch685: xsa30-4.1.patch
 Patch686: xsa31-4.1.patch
 # XSA 32 do not affect Xen 4.1
 Patch688: xsa33-4.1.patch
+# XSA 34,35 do not affect Xen 4.1 we use
+# XSA 36 isn't trivial to backport to 4.1.2, but it's DoS only so ignore it for now
+# XSA 37,38 do not affect Xen 4.1 we use
+# XSA 39,40,41,42,43 are for Xen itself
+Patch690: xsa44-4.1.patch
+Patch691: xsa46-4.1.patch
+Patch692: xsa50-4.1.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: transfig libidn-devel zlib-devel texi2html SDL-devel curl-devel
@@ -229,6 +237,7 @@ to build the xen packages.
 %patch20 -p1
 %patch26 -p1
 %patch28 -p1
+%patch32 -p1
 
 %patch100 -p1
 %patch101 -p1
@@ -273,6 +282,9 @@ to build the xen packages.
 %patch685 -p1
 %patch686 -p1
 %patch688 -p1
+%patch690 -p1
+%patch691 -p1
+%patch692 -p1
 
 # stubdom sources
 cp -v %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE16} stubdom
