@@ -106,8 +106,10 @@ RPM := rpmbuild
 
 RPM_WITH_DIRS = $(RPM) $(RPM_DEFINES)
 
-rpms: get-sources verify-sources $(SPECFILE)
+rpms-dom0:
 	$(RPM_WITH_DIRS) -bb $(SPECFILE)
+
+rpms: get-sources verify-sources $(SPECFILE) rpms-dom0
 	rpm --addsign $(RPMDIR)/x86_64/*$(VERSION)-$(RELEASE)*.rpm
 
 rpms-nobuild:
