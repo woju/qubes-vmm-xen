@@ -247,6 +247,9 @@ to build the xen packages.
 %patch699 -p1
 %patch700 -p1
 
+# Fix for glibc 2.7
+sed 's:LIBS+=-lutil:LIBS+=-lutil -lrt:' -i tools/ioemu-qemu-xen/Makefile.target
+
 # stubdom sources
 cp -v %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE16} stubdom
 cp -v %{PATCH23} stubdom/grub.patches/99grub-ext4-support.patch
