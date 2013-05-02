@@ -122,6 +122,14 @@ Patch688: xsa33-4.1.patch
 Patch690: xsa44-4.1.patch
 Patch691: xsa46-4.1.patch
 Patch692: xsa50-4.1.patch
+Patch693: xsa45-4.1-01-vcpu-destroy-pagetables-preemptible.patch
+Patch694: xsa45-4.1-02-new-guest-cr3-preemptible.patch
+Patch695: xsa45-4.1-03-new-user-base-preemptible.patch
+Patch696: xsa45-4.1-04-vcpu-reset-preemptible.patch
+Patch697: xsa45-4.1-05-set-info-guest-preemptible.patch
+Patch698: xsa45-4.1-06-unpin-preemptible.patch
+Patch699: xsa45-4.1-07-mm-error-paths-preemptible.patch
+Patch700: xsa49-4.1.patch
 
 # Qubes HVM
 Patch200: xen-stubdom-qubes-gui.patch
@@ -315,6 +323,14 @@ This package contains files for HVM domains, especially stubdomain with device m
 %patch690 -p1
 %patch691 -p1
 %patch692 -p1
+%patch693 -p1
+%patch694 -p1
+%patch695 -p1
+%patch696 -p1
+%patch697 -p1
+%patch698 -p1
+%patch699 -p1
+%patch700 -p1
 
 %patch200 -p0
 %patch201 -p2
