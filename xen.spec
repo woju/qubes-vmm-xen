@@ -86,6 +86,9 @@ Patch697: xsa45-4.1-05-set-info-guest-preemptible.patch
 Patch698: xsa45-4.1-06-unpin-preemptible.patch
 Patch699: xsa45-4.1-07-mm-error-paths-preemptible.patch
 Patch700: xsa49-4.1.patch
+Patch701: xsa52-4.1.patch
+Patch702: xsa53-4.1.patch
+Patch703: xsa54.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: transfig libidn-devel zlib-devel texi2html SDL-devel curl-devel
@@ -249,6 +252,9 @@ to build the xen packages.
 %patch698 -p1
 %patch699 -p1
 %patch700 -p1
+%patch701 -p1
+%patch702 -p1
+%patch703 -p1
 
 # Fix for glibc 2.7
 sed 's:LIBS+=-lutil:LIBS+=-lutil -lrt:' -i tools/ioemu-qemu-xen/Makefile.target
