@@ -50,7 +50,6 @@ Patch20: localgcc451fix.patch
 Patch23: grub-ext4-support.patch
 Patch26: localgcc46fix.patch
 Patch28: pygrubfix.patch
-Patch32: xsa50-4.1.2-prereq.patch
 
 Patch100: xen-configure-xend.patch
 Patch101: xen-no-downloads.patch
@@ -214,7 +213,6 @@ to build the xen packages.
 %patch20 -p1
 %patch26 -p1
 %patch28 -p1
-%patch32 -p1
 
 %patch100 -p1
 %patch101 -p1
