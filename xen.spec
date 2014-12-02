@@ -473,9 +473,9 @@ mkdir -p %{buildroot}%{_localstatedir}/log/xen/console
 
 ############ create symlink for x86_64 for compatibility with 3.4 ############
 
-%if "%{_libdir}" != "/usr/lib"
-ln -s /usr/lib/%{name}/bin/qemu-dm %{buildroot}/%{_libdir}/%{name}/bin/qemu-dm
-%endif
+###%if "%{_libdir}" != "/usr/lib"
+###ln -s /usr/lib/%{name}/bin/qemu-dm %{buildroot}/%{_libdir}/%{name}/bin/qemu-dm
+###%endif
 
 ln -s ../sbin/xl %{buildroot}/%{_bindir}/xl
 
@@ -661,9 +661,9 @@ rm -rf %{buildroot}
 # man pages
 %{_mandir}/man1/xentop.1*
 %{_mandir}/man1/xentrace_format.1*
-%{_mandir}/man1/xenstore-chmod.1*
-%{_mandir}/man1/xenstore-ls.1*
-%{_mandir}/man1/xenstore.1*
+###%{_mandir}/man1/xenstore-chmod.1*
+###%{_mandir}/man1/xenstore-ls.1*
+###%{_mandir}/man1/xenstore.1*
 %{_mandir}/man8/xentrace.8*
 %{_mandir}/man1/xl.1*
 %{_mandir}/man5/xl.cfg.5*
@@ -727,7 +727,7 @@ rm -rf %{buildroot}
 %{_sbindir}/xl
 %{_sbindir}/xen-lowmemd
 %{_sbindir}/xen-ringwatch
-%{_sbindir}/xen-mfndump
+###%{_sbindir}/xen-mfndump
 %{_sbindir}/xencov
 /usr/libexec/qemu-bridge-helper
 %{_bindir}/xl
@@ -813,6 +813,31 @@ rm -rf %{buildroot}
 /usr/lib/xen/boot/vtpm-stubdom.gz
 /usr/lib/xen/boot/vtpmmgr-stubdom.gz
 %endif
+
+### XXX: TEMP: Added for xen-vgt test
+/etc/rc.d/init.d/xend
+/etc/xen/xend-config.sxp
+/etc/xen/xend-pci-permissive.sxp
+/etc/xen/xend-pci-quirks.sxp
+/etc/xen/xm-config.xml
+/etc/xen/xmexample.hvm
+/etc/xen/xmexample.hvm-stubdom
+/etc/xen/xmexample.nbd
+/etc/xen/xmexample.pv-grub
+/etc/xen/xmexample.vti
+/etc/xen/xmexample1
+/etc/xen/xmexample2
+/etc/xen/xmexample3
+/usr/lib/xen/bin/qemu-ga
+/usr/sbin/blktapctrl
+/usr/sbin/flask-get-bool
+/usr/sbin/flask-getenforce
+/usr/sbin/flask-label-pci
+/usr/sbin/flask-loadpolicy
+/usr/sbin/flask-set-bool
+/usr/sbin/flask-setenforce
+/usr/sbin/xsview
+/usr/share/xen/create.dtd
 
 %changelog
 * Sun May 11 2014 Michael Young <m.a.young@durham.ac.uk> - 4.3.2-4
