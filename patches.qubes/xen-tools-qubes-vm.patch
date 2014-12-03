@@ -1,0 +1,65 @@
+--- xen-4.3.1/tools/Makefile.orig	2013-10-30 08:18:28.000000000 +0000
++++ xen-4.3.1/tools/Makefile	2014-12-02 22:33:47.587570599 +0000
+@@ -8,49 +8,15 @@
+ SUBDIRS-y :=
+ SUBDIRS-y += include
+ SUBDIRS-y += libxc
+-SUBDIRS-y += flask
+ SUBDIRS-y += xenstore
+-SUBDIRS-y += misc
+-SUBDIRS-y += examples
+ SUBDIRS-y += hotplug
+-SUBDIRS-y += xentrace
+-SUBDIRS-$(CONFIG_XCUTILS) += xcutils
+-SUBDIRS-$(CONFIG_X86) += firmware
+-SUBDIRS-y += console
+-SUBDIRS-y += xenmon
+-SUBDIRS-y += xenstat
+-SUBDIRS-$(CONFIG_Linux) += $(SUBDIRS-libaio)
+-SUBDIRS-$(CONFIG_Linux) += memshr 
+-ifeq ($(CONFIG_X86),y)
+-SUBDIRS-$(CONFIG_Linux) += blktap
+-endif
+-SUBDIRS-$(CONFIG_Linux) += blktap2
+-SUBDIRS-$(CONFIG_NetBSD) += $(SUBDIRS-libaio)
+-SUBDIRS-$(CONFIG_NetBSD) += blktap2
+-SUBDIRS-$(CONFIG_NetBSD) += xenbackendd
+-SUBDIRS-y += libfsimage
+-SUBDIRS-$(LIBXENAPI_BINDINGS) += libxen
++###SUBDIRS-$(CONFIG_Linux) += $(SUBDIRS-libaio)
++###SUBDIRS-$(CONFIG_NetBSD) += $(SUBDIRS-libaio)
+ SUBDIRS-$(CONFIG_Linux) += libvchan
+ 
+-# do not recurse in to a dir we are about to delete
+-ifneq "$(MAKECMDGOALS)" "distclean"
+-SUBDIRS-$(CONFIG_IOEMU) += qemu-xen-traditional-dir
+-SUBDIRS-$(CONFIG_IOEMU) += qemu-xen-dir
+-endif
+-
+-SUBDIRS-y += xenpmd
+-SUBDIRS-y += libxl
+-SUBDIRS-y += remus
+-SUBDIRS-$(CONFIG_X86) += xenpaging
+-SUBDIRS-$(CONFIG_X86) += debugger/gdbsx
+-SUBDIRS-$(CONFIG_X86) += debugger/kdd
+-SUBDIRS-$(CONFIG_TESTS) += tests
+-
+ # These don't cross-compile
+ ifeq ($(XEN_COMPILE_ARCH),$(XEN_TARGET_ARCH))
+ SUBDIRS-y += python
+-SUBDIRS-y += pygrub
+-SUBDIRS-$(OCAML_TOOLS) += ocaml
+ endif
+ 
+ # For the sake of linking, set the sys-root
+--- xen-4.3.1/tools/python/setup.py.orig	2013-10-30 08:18:28.000000000 +0000
++++ xen-4.3.1/tools/python/setup.py	2014-12-02 22:40:39.439038099 +0000
+@@ -88,7 +88,7 @@
+                sources            = [ "xen/lowlevel/xl/xl.c", "xen/lowlevel/xl/_pyxl_types.c" ])
+ 
+ plat = os.uname()[0]
+-modules = [ xc, xs, ptsname, flask ]
++modules = [ xc, xs, ptsname ]
+ #modules.extend([ xl ])
+ if plat == 'SunOS':
+     modules.extend([ scf, process ])

@@ -1,0 +1,19 @@
+--- xen-4.3.1/extras/mini-os/netfront.c.orig	2013-10-30 08:18:28.000000000 +0000
++++ xen-4.3.1/extras/mini-os/netfront.c	2014-12-03 00:49:21.681393984 +0000
+@@ -533,9 +533,15 @@
+     state = xenbus_read_integer(path);
+     while (state < XenbusStateClosed) {
+         err = xenbus_wait_for_state_change(path, &state, &dev->events);
+-        if (err) free(err);
++        free(err);
+     }
+ 
++    /* device closed, lets remove it completely so backend also will be
++     * removed; this way we force that only one vif remains (for this
++     * particular VM) in firewallvm and right route entry is used */
++    xenbus_rm(XBT_NIL, dev->nodename);
++    goto close;
++
+     if ((err = xenbus_switch_state(XBT_NIL, nodename, XenbusStateInitialising)) != NULL) {
+         printk("shutdown_netfront: error changing state to %d: %s\n",
+                 XenbusStateInitialising, err);

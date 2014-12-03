@@ -1,0 +1,13 @@
+--- xen-4.3.1/tools/libxl/libxl_create.c.orig	2013-10-30 08:18:28.000000000 +0000
++++ xen-4.3.1/tools/libxl/libxl_create.c	2014-12-03 00:19:54.816648756 +0000
+@@ -498,6 +498,10 @@
+     libxl__xs_mkdir(gc, t,
+                     libxl__sprintf(gc, "%s/data", dom_path),
+                     rwperm, ARRAY_SIZE(rwperm));
++    libxl__xs_mkdir(gc, t,
++		    libxl__sprintf(gc, "%s/error", dom_path),
++		    rwperm, ARRAY_SIZE(rwperm));
++
+     if (info->type == LIBXL_DOMAIN_TYPE_HVM)
+         libxl__xs_mkdir(gc, t,
+             libxl__sprintf(gc, "%s/hvmloader/generation-id-address", dom_path),
