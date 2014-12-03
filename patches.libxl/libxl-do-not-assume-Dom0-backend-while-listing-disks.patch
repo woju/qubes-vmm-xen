@@ -1,5 +1,5 @@
 --- xen-4.3.1/tools/libxl/libxl.c.orig	2013-10-30 08:18:28.000000000 +0000
-+++ xen-4.3.1/tools/libxl/libxl.c	2014-12-03 00:14:36.571364981 +0000
++++ xen-4.3.1/tools/libxl/libxl.c	2014-12-03 02:11:11.054277117 +0000
 @@ -2331,16 +2331,16 @@
                                             libxl_device_disk **disks,
                                             int *ndisks)
@@ -39,6 +39,15 @@
              *ndisks += 1;
          }
      }
+@@ -2949,7 +2951,7 @@
+     return;
+ }
+ 
+-static void libxl__device_nic_from_xs_be(libxl__gc *gc,
++static int libxl__device_nic_from_xs_be(libxl__gc *gc,
+                                          const char *be_path,
+                                          libxl_device_nic *nic)
+ {
 @@ -2960,6 +2962,11 @@
  
      libxl_device_nic_init(nic);
@@ -51,7 +60,18 @@
      tmp = xs_read(ctx->xsh, XBT_NULL,
                    libxl__sprintf(gc, "%s/handle", be_path), &len);
      if ( tmp )
-@@ -3022,14 +3029,14 @@
+@@ -2988,6 +2995,10 @@
+     nic->nictype = LIBXL_NIC_TYPE_VIF;
+     nic->model = NULL; /* XXX Only for TYPE_IOEMU */
+     nic->ifname = NULL; /* XXX Only for TYPE_IOEMU */
++    
++    rc = 0;
++ out:
++    return rc;
+ }
+ 
+ int libxl_devid_to_device_nic(libxl_ctx *ctx, uint32_t domid,
+@@ -3022,14 +3033,15 @@
                                             libxl_device_nic **nics,
                                             int *nnics)
  {
@@ -60,6 +80,7 @@
      char **dir = NULL;
      unsigned int n = 0;
      libxl_device_nic *pnic = NULL, *pnic_end = NULL;
++    int rc;
  
 -    be_path = libxl__sprintf(gc, "%s/backend/%s/%d",
 -                             libxl__xs_get_dompath(gc, 0), type, domid);
@@ -70,7 +91,7 @@
      if (dir) {
          libxl_device_nic *tmp;
          tmp = realloc(*nics, sizeof (libxl_device_nic) * (*nnics + n));
-@@ -3037,13 +3044,16 @@
+@@ -3037,16 +3049,22 @@
              return ERROR_NOMEM;
          *nics = tmp;
          pnic = *nics + *nnics;
@@ -92,3 +113,9 @@
          }
      }
      return 0;
++
++ out:
++    return rc;
+ }
+ 
+ libxl_device_nic *libxl_device_nic_list(libxl_ctx *ctx, uint32_t domid, int *num)
