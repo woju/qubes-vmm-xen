@@ -814,6 +814,32 @@ rm -rf %{buildroot}
 /usr/lib/xen/boot/vtpmmgr-stubdom.gz
 %endif
 
+### XXX: TEMP: Added for xen-vgt test
+###      Only since build failed without them
+/etc/rc.d/init.d/xend
+/etc/xen/xend-config.sxp
+/etc/xen/xend-pci-permissive.sxp
+/etc/xen/xend-pci-quirks.sxp
+/etc/xen/xm-config.xml
+/etc/xen/xmexample.hvm
+/etc/xen/xmexample.hvm-stubdom
+/etc/xen/xmexample.nbd
+/etc/xen/xmexample.pv-grub
+/etc/xen/xmexample.vti
+/etc/xen/xmexample1
+/etc/xen/xmexample2
+/etc/xen/xmexample3
+/usr/lib/xen/bin/qemu-ga
+/usr/sbin/blktapctrl
+/usr/sbin/flask-get-bool
+/usr/sbin/flask-getenforce
+/usr/sbin/flask-label-pci
+/usr/sbin/flask-loadpolicy
+/usr/sbin/flask-set-bool
+/usr/sbin/flask-setenforce
+/usr/sbin/xsview
+/usr/share/xen/create.dtd
+
 %changelog
 * Sun May 11 2014 Michael Young <m.a.young@durham.ac.uk> - 4.3.2-4
 - add systemd preset support (#1094938)

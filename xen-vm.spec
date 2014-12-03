@@ -212,6 +212,16 @@ rm -rf %{buildroot}
 %{python_sitearch}/xen/util
 %{python_sitearch}/xen-*.egg-info
 
+### XXX: TEMP: Added for xen-vgt test
+###      Only since build failed without them
+# More Python modules
+%{python_sitearch}/xen/remus
+%{python_sitearch}/xen/sv
+%{python_sitearch}/xen/web
+%{python_sitearch}/xen/xend
+%{python_sitearch}/xen/xm
+%{python_sitearch}/xen/xsview/*.py*
+
 %files devel
 %defattr(-,root,root)
 %{_includedir}/*.h
