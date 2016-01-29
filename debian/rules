@@ -1,50 +1,156 @@
 #!/usr/bin/make -f
 
+#
+# TODO:
+#
+# - FIX: Pretty sure orig.tar.gz is including all the downloaded *.tar *.gz
+# - FIX: Make sure all deb helper modules used here are in build-depends
+#        debian-builder snippets
+#        dh_buildinfo
+#        autotools-dev
+#        python2
+#
+# - FIX: Make sure there are no missing files -- I think there are.
+#        output from dh_buildinfo may be missing as well...
+#        dh_install: etc/bash_completion.d/xl.sh exists in debian/tmp but is not installed to anywhere
+#        dh_install: etc/default/xendomains exists in debian/tmp but is not installed to anywhere
+#        dh_install: etc/default/xencommons exists in debian/tmp but is not installed to anywhere
+#        dh_install: etc/init.d/xendomains exists in debian/tmp but is not installed to anywhere
+#        dh_install: etc/init.d/xen-watchdog exists in debian/tmp but is not installed to anywhere
+#        dh_install: etc/init.d/xencommons exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/bin/xenstore exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/lib/x86_64-linux-gnu/libxenlight.a exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/lib/x86_64-linux-gnu/libxlutil.a exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/lib/x86_64-linux-gnu/xen/bin/convert-legacy-stream exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/lib/x86_64-linux-gnu/xen/bin/xendomains exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/lib/x86_64-linux-gnu/xen/bin/verify-stream-v2 exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/lib/x86_64-linux-gnu/xen/bin/xen-init-dom0 exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/lib/x86_64-linux-gnu/xen/bin/libxl-save-helper exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/share/pkgconfig/xenlight.pc exists in debian/tmp but is not installed to anywhere
+#        dh_install: usr/share/pkgconfig/xlutil.pc exists in debian/tmp but is not installed to anywhere
+#
+# - FIX: Implement `dist` target to build tar
+# - FIX: Implement `get-orig-sources` target to download AND verify tar
+# - FIX: Show lintian warnings -- maybe that will be a builder-debian option
+#
+# - CHECK: Make sure its not re-building 5 times; once for each package
+#
+
 # See debhelper(7) (uncomment to enable)
 # output every command that modifies files on the build system.
-#DH_VERBOSE = 1
+DH_VERBOSE = 1
 
 # see EXAMPLES in dpkg-buildflags(1) and read /usr/share/dpkg/*
 DPKG_EXPORT_BUILDFLAGS = 1
-include /usr/share/dpkg/default.mk
 
-export DESTDIR=$(shell pwd)/debian/tmp
-BUILD_DIR = debian/build
+# Top source directory to apply patches in
+QUILT_TOPDIR := build-xen
+QUILT_DIR := $(CURDIR)
+QUILT_SERIES = $(firstword $(MASTER_QUILT_SERIES))
 
-%:
-	dh $@ --with autotools-dev,python2
+include /usr/share/qubes-builder/default.mk
 
-override_dh_auto_configure:
-	dh_auto_configure -- --prefix=/usr \
-		--includedir=/usr/include \
-		--mandir=/usr/share/man \
-		--infodir=/usr/share/info \
-		--with-initddir=/etc/init.d \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--disable-ocamltools \
-		--disable-blktap2
+install_target = install
+build_target = build
 
-override_dh_auto_build:
-	dh_clean --keep
-	make dist-tools
+confflags_xen = \
+	--enable-tools \
+	--disable-xen \
+	--disable-stubdom \
+	--disable-docs \
+	--disable-ocamltools \
+	--disable-blktap2
+	#--with-initddir=/etc/init.d
 
-override_dh_auto_install:
-	make DESTDIR=$(DESTDIR) install-tools
-	dh_testdir
-	dh_testroot
-	dh_install --arch --sourcedir=debian/tmp
-	dh_strip --arch
-	dh_makeshlibs -V
-	dh_shlibdeps
-	dh_installchangelogs -XChangelog
-	#dh_installdirs
-	#dh_installdocs
-	#dh_installexamples
-	#dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol -- $(GENCONTROL_ARGS)
-	#dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+# ------------------------------------------------------------------------------
+# xen package configuration
+# ------------------------------------------------------------------------------
+override_dh_auto_configure: configure-xen
+override_dh_auto_build: build-arch-xen
+install-arch: install-arch-xen
+
+build-xen: tarball = $(wildcard xen-*.tar.gz)
+build-arch-xen: build_target = dist-tools
+install-arch-xen: install_target = install-tools
+
+# ------------------------------------------------------------------------------
+# setup targets
+# ------------------------------------------------------------------------------
+setup:: build-xen patch get-orig-source
+build-%:
+	@mkdir -p build-$*
+	@tar xfz $(tarball) -C build-$* --strip-components=1
+
+# ------------------------------------------------------------------------------
+# default target
+# ------------------------------------------------------------------------------
+binary binary-arch binary-indep build build-arch build-indep clean:
+	@dh $@ --with autotools-dev,python2 --sourcedirectory=build-xen
+
+# ------------------------------------------------------------------------------
+# configure targets
+# ------------------------------------------------------------------------------
+configure-%:
+	@dh_testdir
+	@dh_auto_configure --sourcedirectory=build-$* -- \
+	    --prefix=$(prefix) \
+	    --exec_prefix=$(exec_prefix) \
+	    --sysconfdir=$(sysconfdir) \
+	    --libdir=$(libdir) \
+	    --libexecdir=$(libexecdir) \
+	    --includedir=$(includedir) \
+	    --infodir=$(infodir) \
+	    --localstatedir=$(localstatedir) \
+	    --mandir=$(mandir) \
+	    $(confflags_$*)
+
+# ------------------------------------------------------------------------------
+# build targets
+# ------------------------------------------------------------------------------
+build-arch-%:
+	@dh_auto_build --arch --sourcedirectory=build-$* -- $(build_target)
+
+# ------------------------------------------------------------------------------
+# install targets
+# ------------------------------------------------------------------------------
+install-arch-%:
+	@$(MAKE) -f debian/rules DH_OPTIONS=-s binary-initial
+	@cd build-$* && make DESTDIR=$(DESTDIR) $(install_target)
+	@dh_installdocs -s
+	@dh_installchangelogs -s
+	@dh_install --arch --sourcedir=debian/tmp --list-missing
+	@dh_installdebconf -s
+	@dh_installman -s
+	@dh_link -s
+	@dh_strip --arch
+	@dh_makeshlibs -V
+	@$(MAKE) -f debian/rules DH_OPTIONS=-s binary-deb
+
+install-indep:
+	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-initial
+	@dh_install -i
+	@dh_installdocs -i
+	@#dh_installchangelogs -i ChangeLog
+
+override_dh_auto_install: install-indep install-arch
+	@true
+
+# ------------------------------------------------------------------------------
+# target stubs
+# ------------------------------------------------------------------------------
+# Stub to start building deb files
+binary-initial:
+	@dh_testdir
+	@dh_testroot
+
+# Stub to build deb files
+binary-deb:
+	@dh_lintian
+	@dh_buildinfo
+	@dh_compress
+	@dh_fixperms
+	@dh_installdeb
+	@dh_shlibdeps
+	@dh_gencontrol
+	@dh_md5sums
+	@dh_builddeb
